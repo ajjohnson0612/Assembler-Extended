@@ -1,3 +1,4 @@
+   .EQU test 1234
    @R0
    D=M              // D = first number
    @R1

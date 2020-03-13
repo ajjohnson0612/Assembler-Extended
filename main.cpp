@@ -27,6 +27,7 @@
 #include "Parser.cpp"
 #include "CodeTranslator.cpp"
 #include "SymbolTable.cpp"
+#include "ErrorHandler.cpp"
 
 using namespace std;
 
@@ -35,7 +36,7 @@ int main(int argc, char *argv[]) {
     int lineNumberROM, newAddress;
     unsigned long lineNumberSource;
     ofstream fout;
-
+    ErrorHandler handler;
     // Get the input and output file names, and provide usage instructions
     //  if too few or too many arguments are provided.
 
@@ -68,7 +69,6 @@ int main(int argc, char *argv[]) {
 
     lineNumberSource = 0;
     lineNumberROM = 0;
-
     while (true) {
         symbolSource.advance(lineNumberSource);
 
@@ -76,13 +76,30 @@ int main(int argc, char *argv[]) {
             break;
         }
 
-        if (symbolSource.commandType(lineNumberSource) == 'A' || symbolSource.commandType(lineNumberSource) == 'C') {
+        if (symbolSource.commandType(lineNumberSource) != 'A' && symbolSource.commandType(lineNumberSource) != 'C' && symbolSource.commandType(lineNumberSource) != 'L') {
+            handler.WriteErrors(9,lineNumberSource);
+        }
+        else if (symbolSource.commandType(lineNumberSource) == 'A' || symbolSource.commandType(lineNumberSource) == 'C') {
             lineNumberROM++;
         }
 
-        if (symbolSource.commandType(lineNumberSource) == 'L' && !symbolTable.contains(symbolSource.symbol())) {
-            symbolTable.addEntry(symbolSource.symbol(), lineNumberROM);
+        if (symbolTable.contains(symbolSource.symbol()) == true && symbolSource.commandType(lineNumberSource) == 'L'){
+          handler.WriteErrors(6,lineNumberSource);
         }
+
+        if (symbolSource.commandType(lineNumberSource) == 'L' && !symbolTable.contains(symbolSource.symbol())) {
+
+            if (symbolSource.getFirstChar() == '.') {
+                
+                symbolTable.addEQUEntry(symbolSource.symbol(), symbolSource.getEQUValue());
+            }
+
+            else {
+                symbolTable.addEntry(symbolSource.symbol(), lineNumberROM);
+            }
+        }
+        
+            
     }
 
     /*
@@ -124,7 +141,11 @@ int main(int argc, char *argv[]) {
             if (assemblySource.symbol().find_first_not_of("0123456789") == string::npos ) 
             {
                 // Convert the string to a decimal number, convert the decimal number to a binary number.
-                fout << bitset<15>(stoull(assemblySource.getBitSet(), nullptr)).to_string();
+                if (assemblySource.getBitSet() == " "){
+                  handler.WriteErrors(8,lineNumberSource);
+                }
+                else
+                  fout << bitset<15>(stoull(assemblySource.getBitSet(), nullptr)).to_string();
             }
             else if(assemblySource.symbol().find_first_not_of("0123456789bBxX") == string::npos)
             {
@@ -143,8 +164,20 @@ int main(int argc, char *argv[]) {
         }
         else if (assemblySource.commandType(lineNumberSource) == 'C') {
             fout << "111";  // C-instructions always start with "111".
+
+            if (translator.comp(assemblySource.compM(), lineNumberSource) == " ") {
+                  handler.WriteErrors(3,lineNumberSource);
+            }
             fout << translator.comp(assemblySource.compM(), lineNumberSource);
+
+            if (translator.dest(assemblySource.destM(), lineNumberSource) == " ") {
+                  handler.WriteErrors(2,lineNumberSource);
+            }
             fout << translator.dest(assemblySource.destM(), lineNumberSource);
+           
+            if (translator.jump(assemblySource.jumpM(), lineNumberSource) == " ") {
+                handler.WriteErrors(4,lineNumberSource);
+            }
             fout << translator.jump(assemblySource.jumpM(), lineNumberSource);
             fout << endl;
         }

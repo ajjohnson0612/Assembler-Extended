@@ -27,6 +27,7 @@ public:
     // Returns the address associated with the given symbol.
 
     void PrintTable();
+    void addEQUEntry(string symbol,int value);
 private:
     map<string, int> symbolAddressTable;
 };

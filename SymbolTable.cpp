@@ -59,8 +59,10 @@ int SymbolTable::getAddress(string symbol) {
 
     // If the table does not contain the symbol.
     return 0;
+}
+void SymbolTable::addEQUEntry(string symbol, int value) {
 
-
-
-
+    if (symbolAddressTable.find(symbol) == symbolAddressTable.end()) {
+        symbolAddressTable[symbol] = value;
+    }
 }

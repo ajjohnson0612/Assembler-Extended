@@ -4,7 +4,7 @@
 // File name: projects/06/add/Add.asm
 
 // Computes R0 = 2 + 3  (R0 refers to RAM[0])
-.EQU work 1234
+
 @0x2
 D=A
 @3

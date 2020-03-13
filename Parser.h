@@ -56,6 +56,8 @@ public:
     string jumpM();
     // Returns the jump mnemonic of the current command.
     // Should only be called if commandType() returns 'C'.
+    char getFirstChar();
+    int getEQUValue();
 private:
     ifstream fin;
     string currentCommand;

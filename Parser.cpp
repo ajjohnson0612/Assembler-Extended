@@ -62,14 +62,13 @@ void Parser::advance(unsigned long& lineNr) {
 }
 
 char Parser::commandType(unsigned long& lineNr) {
-  ofstream errorfile;
-  errorfile.open("ErrorFile.txt");
+
     if (commandTable.find(currentCommand[0]) != commandTable.end()) {
         return commandTable[currentCommand[0]];
     }
 
     // If an invalid command is found, output an error message and line number.
-    errorfile << "Invalid syntax at line: " << lineNr << endl;
+    
     return ' ';
     
 }
@@ -77,7 +76,7 @@ string Parser::getBitSet(){
   
   //decimal input
     if (currentCommand.find_first_not_of("0123456789") == string::npos) {
-        return bitset<15>(stoull(symbol(), nullptr)).to_string();
+        return symbol();
     }
     else if (currentCommand.find("0x") != string::npos) {
         int getStart = symbol().find("x");
@@ -146,8 +145,15 @@ string Parser::symbol() {
         return currentCommand.substr(openBracketPos + 1, closeBracketPos - openBracketPos - 1);
     }
     else if (openBracketPos != string::npos && closeBracketPos != string::npos && currentCommand.at(openBracketPos) == '.') {
-        char value = currentCommand.find_first_of("0123456789");
-        return currentCommand.substr(closeBracketPos + 1, currentCommand.length() - 1);
+
+        int value = currentCommand.find_first_of("0123456789");
+        int len = value - closeBracketPos -1 ;
+      
+        string other = currentCommand.substr(closeBracketPos + 1, len);
+        if (other.find_first_not_of("qazwsxedcrfvtgbyhnujmikolpQAZWSXEDCRFVTGBYHNUJMIKOLP") != string::npos){
+          return " ";
+        }
+        return other;
     }
 
     // If the function was called in error, return a blank string.
@@ -206,4 +212,21 @@ string Parser::jumpM() {
 
     // If a jump was not specified, return a blank string.
     return "";
+}
+int Parser::getEQUValue() {
+    unsigned long startPos, endPos, midPos;
+    int value;
+    startPos = currentCommand.find_first_of("0123456789");
+    endPos = currentCommand.find_first_not_of("0123456789",startPos);
+
+    int len = endPos - startPos - 1;
+    
+    string str = currentCommand.substr(startPos , len);
+    stringstream stream(str);
+    
+    stream >> value;
+    return value;
+}
+char Parser::getFirstChar() {
+    return currentCommand.at(0);
 }

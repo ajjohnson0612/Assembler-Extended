@@ -1,6 +1,9 @@
 ARG: 2 
+INFINITE_LOOP: 14 
 KBD: 24576 
 LCL: 1 
+OUTPUT_D: 12 
+OUTPUT_FIRST: 10 
 R0: 0 
 R1: 1 
 R10: 10 
@@ -21,4 +24,4 @@ SCREEN: 16384
 SP: 0 
 THAT: 4 
 THIS: 3 
-work1234: 0 
+test: 1234 
