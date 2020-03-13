@@ -38,8 +38,7 @@ public:
     // Returns 'C' for a C-instruction.
     // Returns 'L' for a label.
     // Line number is used for error information.
-    const char* hex_char_to_bin(char c);
-     string hex_str_to_bin_str(const string& hex);
+
     
     string getBitSet();
     string symbol();

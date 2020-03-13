@@ -81,22 +81,35 @@ string Parser::getBitSet(){
     }
     else if (currentCommand.find("0x") != string::npos) {
         int getStart = symbol().find("x");
-
-        return hex_str_to_bin_str(currentCommand.substr(getStart, currentCommand.length() - 1));;
+        int x;
+        stringstream ss;
+        ss << hex << currentCommand.substr(getStart, currentCommand.length() - 1);
+        ss >> x;
+        if (x > 32767) {
+            return " ";
+        }
+        string ret = to_string(x);
+        return ret;
     }
     //hex input
     else if (currentCommand.find("0X") != string::npos) {
-
-        int getStart = currentCommand.find("X");
-        
-
-        return hex_str_to_bin_str(currentCommand.substr(getStart,currentCommand.length() - 1));
+        int getStart = symbol().find("X");
+        int x;
+        stringstream ss;
+        ss << hex << currentCommand.substr(getStart, currentCommand.length() - 1);
+        ss >> x;
+        if (x > 32767) {
+            return " ";
+        }
+        string ret = to_string(x);
+            return ret;
     }
     //binary input
     else if (currentCommand.find("0b") != string::npos) {
+
     int getStart = currentCommand.find("b");
 
-    return bitset<15>(stoull(currentCommand.substr(getStart + 1, currentCommand.length() - 1),nullptr)).to_string();
+    return currentCommand.substr(getStart + 1, currentCommand.length() - 1);
     }
   else if(currentCommand.find("0B") != string::npos){
     int getStart = currentCommand.find("B");
@@ -107,37 +120,7 @@ string Parser::getBitSet(){
   
 }
 
-const char* Parser::hex_char_to_bin(char c)
-{
-    
-    switch (toupper(c))
-    { 
-        case '0': return "0000";
-        case '1': return "0001";
-        case '2': return "0010";
-        case '3': return "0011";
-        case '4': return "0100";
-        case '5': return "0101";
-        case '6': return "0110";
-        case '7': return "0111";
-        case '8': return "1000";
-        case '9': return "1001";
-        case 'A': return "1010";
-        case 'B': return "1011";
-        case 'C': return "1100";
-        case 'D': return "1101";
-        case 'E': return "1110";
-        case 'F': return "1111";
-    }
-}
 
-string Parser::hex_str_to_bin_str(const string & hex) 
-    {
-    string bin;
-    for (unsigned i = 0; i != hex.length(); ++i)
-        bin += hex_char_to_bin(hex[i]);
-    return bin;
-    }
 
 ////////////////////////////////////////////
 string Parser::symbol() {
@@ -163,6 +146,7 @@ string Parser::symbol() {
         return currentCommand.substr(openBracketPos + 1, closeBracketPos - openBracketPos - 1);
     }
     else if (openBracketPos != string::npos && closeBracketPos != string::npos && currentCommand.at(openBracketPos) == '.') {
+        char value = currentCommand.find_first_of("0123456789");
         return currentCommand.substr(closeBracketPos + 1, currentCommand.length() - 1);
     }
 

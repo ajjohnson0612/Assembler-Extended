@@ -129,7 +129,7 @@ int main(int argc, char *argv[]) {
             else if(assemblySource.symbol().find_first_not_of("0123456789bBxX") == string::npos)
             {
 
-                fout << bitset<15>(assemblySource.getBitSet());
+                fout << bitset<15>(stoull(assemblySource.getBitSet(),nullptr)).to_string();
             }
             else {
                 // Check if the symbol is a variable.

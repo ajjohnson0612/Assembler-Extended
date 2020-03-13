@@ -21,11 +21,11 @@ A=D-M
 
 
 // dest assembler directives
-//.EQU cool 12345
+.EQU cool 12345
 //@cool
-//.EQU oh_cool 7645
+.EQU oh_cool 7645
 //@oh_cool
-//.EQU bin_num 0b101
+.EQU bin_num 0b101
 //@bin_num
 
 

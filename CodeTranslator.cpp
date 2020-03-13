@@ -61,40 +61,39 @@ CodeTranslator::CodeTranslator() {
 }
 
 string CodeTranslator::dest(string destMnemonic, unsigned long& lineNr) {
-    ofstream ErrorFile;
-    ErrorFile.open("ErrorFile.txt");
+    
+    
     if (destTable.find(destMnemonic) != destTable.end()) {
         return destTable[destMnemonic];
     }
 
     // If none of the mnemonics are found, output an error message,
     //  and provide the line number in the original source where the error occurred.
-    ErrorFile << "Invalid syntax in destination statement at line: " << lineNr << endl;
-    exit(1);
+    
+    return " ";
 }
 
 string CodeTranslator::comp(string compMnemonic, unsigned long& lineNr) {
-    ofstream ErrorFile;
-    ErrorFile.open("ErrorFile.txt");
+   
+    
     if (compTable.find(compMnemonic) != compTable.end()) {
         return compTable[compMnemonic];
     }
 
     // If none of the mnemonics are found, output an error message,
     //  and provide the line number in the original source where the error occurred.
-    ErrorFile << "Invalid syntax in computation statement at line: " << lineNr << endl;
-    exit(1);
+    
+    return " ";
 }
 
 string CodeTranslator::jump(string jumpMnemonic, unsigned long& lineNr) {
-    ofstream ErrorFile;
-    ErrorFile.open("ErrorFile.txt");
+
     if (jumpTable.find(jumpMnemonic) != jumpTable.end()) {
         return jumpTable[jumpMnemonic];
     }
 
     // If none of the mnemonics are found, output an error message,
     //  and provide the line number in the original source where the error occurred.
-     ErrorFile << "Invalid syntax in jump statement at line: " << lineNr << endl;
-    exit(1);
+     
+    return " ";
 }
