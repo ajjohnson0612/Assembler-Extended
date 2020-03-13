@@ -38,7 +38,7 @@ void SymbolTable::PrintTable() {
     ofstream SymbolTableOut;
     SymbolTableOut.open("SybolTable.txt");
     for (auto const& pair : symbolAddressTable) {
-        SymbolTableOut << pair.first << ": " << pair.second << " /n";
+        SymbolTableOut << pair.first << ": " << pair.second << " \n";
     }
     
 }

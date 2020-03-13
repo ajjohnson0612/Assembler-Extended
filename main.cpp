@@ -121,10 +121,15 @@ int main(int argc, char *argv[]) {
             fout << '0';    // A-instructions always start with '0'.
 
             // Check if the symbol is a number.
-            if (assemblySource.symbol().find_first_not_of("0123456789xXbB") == string::npos ) 
+            if (assemblySource.symbol().find_first_not_of("0123456789") == string::npos ) 
             {
                 // Convert the string to a decimal number, convert the decimal number to a binary number.
-                fout << bitset<15>(assemblySource.getBitSet()).to_string();
+                fout << bitset<15>(stoull(assemblySource.getBitSet(), nullptr)).to_string();
+            }
+            else if(assemblySource.symbol().find_first_not_of("0123456789bBxX") == string::npos)
+            {
+
+                fout << bitset<15>(assemblySource.getBitSet());
             }
             else {
                 // Check if the symbol is a variable.

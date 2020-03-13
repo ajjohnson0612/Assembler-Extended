@@ -62,16 +62,19 @@ void Parser::advance(unsigned long& lineNr) {
 }
 
 char Parser::commandType(unsigned long& lineNr) {
+  ofstream errorfile;
+  errorfile.open("ErrorFile.txt");
     if (commandTable.find(currentCommand[0]) != commandTable.end()) {
         return commandTable[currentCommand[0]];
     }
 
     // If an invalid command is found, output an error message and line number.
-    cout << "Invalid syntax at line: " << lineNr << endl;
-
-    exit(1);
+    errorfile << "Invalid syntax at line: " << lineNr << endl;
+    return ' ';
+    
 }
 string Parser::getBitSet(){
+  
   //decimal input
     if (currentCommand.find_first_not_of("0123456789") == string::npos) {
         return bitset<15>(stoull(symbol(), nullptr)).to_string();
@@ -93,7 +96,7 @@ string Parser::getBitSet(){
     else if (currentCommand.find("0b") != string::npos) {
     int getStart = currentCommand.find("b");
 
-    return currentCommand.substr(getStart + 1, currentCommand.length() - 1);
+    return bitset<15>(stoull(currentCommand.substr(getStart + 1, currentCommand.length() - 1),nullptr)).to_string();
     }
   else if(currentCommand.find("0B") != string::npos){
     int getStart = currentCommand.find("B");
@@ -136,6 +139,7 @@ string Parser::hex_str_to_bin_str(const string & hex)
     return bin;
     }
 
+////////////////////////////////////////////
 string Parser::symbol() {
     unsigned long openBracketPos, closeBracketPos;
     if (currentCommand.front() == '.') {
@@ -150,14 +154,16 @@ string Parser::symbol() {
 
     // A-instruction: return everything after the '@' character.
     if (currentCommand[0] == '@') {
+
+     
         return currentCommand.substr(1, currentCommand.length() - 1);
     }
     // L-instruction: return everything in between the '(' and ')' characters.
-    else if (openBracketPos != string::npos && closeBracketPos != string::npos && currentCommand.at(openBracketPos) == 'c') {
+    else if (openBracketPos != string::npos && closeBracketPos != string::npos && currentCommand.at(openBracketPos) == '(') {
         return currentCommand.substr(openBracketPos + 1, closeBracketPos - openBracketPos - 1);
     }
-    else if (openBracketPos != string::npos && closeBracketPos != string::npos && currentCommand.at(openBracketPos) == ',') {
-        return currentCommand.substr(closeBracketPos + 2, currentCommand.length() - 1);
+    else if (openBracketPos != string::npos && closeBracketPos != string::npos && currentCommand.at(openBracketPos) == '.') {
+        return currentCommand.substr(closeBracketPos + 1, currentCommand.length() - 1);
     }
 
     // If the function was called in error, return a blank string.

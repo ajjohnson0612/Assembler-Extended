@@ -47,8 +47,7 @@ CodeTranslator::CodeTranslator() {
     compTable["M-D"] = "1000111";
     compTable["D&M"] = "1000000";
     compTable["D|M"] = "1010101";
-    compTable["D&A"] = "";
-    compTable["!D&A"] = "";
+
     
 
     jumpTable[""] = "000";
